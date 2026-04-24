@@ -68,6 +68,11 @@ fn stream_buffer_empty_body_succeeds() {
 // Test Utilities
 // -----------------------------------------------------------------------------
 
+/// Declares StreamBuffer with a small max_bytes for testing 413 enforcement.
+struct TinyStreamBufferFilter {
+    max_bytes: usize,
+}
+
 /// Start a proxy with a tiny stream buffer filter and return the backend and proxy guards.
 fn setup(max_bytes: usize) -> (BackendGuard, ProxyGuard) {
     let backend = start_backend_with_shutdown("ok");
@@ -104,11 +109,6 @@ filter_chains:
         )
         .expect("duplicate filter name");
     (backend, start_proxy_with_registry(&config, &registry))
-}
-
-/// Declares StreamBuffer with a small max_bytes for testing 413 enforcement.
-struct TinyStreamBufferFilter {
-    max_bytes: usize,
 }
 
 impl TinyStreamBufferFilter {
